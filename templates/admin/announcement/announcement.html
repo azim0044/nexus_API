@@ -1,0 +1,94 @@
+{% extends "/admin/base/base.html" %}
+{% block style %}
+<style>
+    .form-group {
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+{% block header %}
+<h2 class="text-muted">Announcement</h2>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center align-items-center h-screen">
+    <div class="col-xl-8 col-lg-8 col-md-8">
+        <div class="container-fluid">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div id="alert" class="alert alert-{{ category }} mt-1 mb-2" role="alert">
+                {{ message }}
+            </div>
+            <script>
+                setTimeout(function () {
+                    document.getElementById('alert').style.display = 'none';
+                }, 3500);
+            </script>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        <div class="card o-hidden shadow-lg my-2">
+            <div class="card-body">
+                <form action="{{ url_for('admin.announcement') }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="inputUserId">To</label>
+                        <select multiple class="selectpicker form-control " name="memoTo" multiple data-actions-box="true" data-live-search="true">
+                            {% for user in get_user %}
+                            <option value="{{ user.userId }}" data-subtext="{{ user.userPosition }}">{{ user.userFullName }}</option>
+                            {% endfor %}
+                        </select>
+
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputSubject">Subject</label>
+                        <input type="text" name="memoSubject" class="form-control" id="inputSubject"
+                            placeholder="Enter memo subject">
+                    </div>
+                    <div class="form-group">
+                        <label for="inputUserFullName">Message</label>
+                        <textarea name="memoMessage" placeholder="Enter message" class="form-control" id="exampleFormControlTextarea1" rows="8"></textarea>
+                    </div>
+
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    document.getElementById('formFileImage').addEventListener('change', function (e) {
+        // Get the selected file
+        var file = e.target.files[0];
+
+        // Create a new FileReader object
+        var reader = new FileReader();
+
+        // When the file has been read...
+        reader.onload = function (e) {
+            // Create a new img element
+            var img = document.createElement('img');
+
+            // Set the src of the img element to the data URL of the file
+            img.src = e.target.result;
+
+            // Set the maximum width and height of the img element
+            img.style.maxWidth = '200px';
+            img.style.maxHeight = '200px';
+
+            // Add the img element to the imagePreview div
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('imagePreview').appendChild(img);
+        };
+
+        // Read the file as a data URL
+        reader.readAsDataURL(file);
+    });
+</script>
+{% endblock %}

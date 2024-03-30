@@ -1,0 +1,221 @@
+{% include '/lecturer/base.html' %}
+<link rel="stylesheet" href="/static/css/animations.css">
+<style>
+    .container-fluid {
+        animation: transitionIn-X 0.5s;
+    }
+</style>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div id="alert" class="alert alert-{{ category }}" role="alert">
+        {{ message }}
+    </div>
+    <script>
+        setTimeout(function () {
+            document.getElementById('alert').style.display = 'none';
+        }, 3500);
+    </script>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Appointments</h1>
+    <p class="mb-4">List of all student appointment</a>.</p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Appointments Detail</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Student Id</th>
+                            <th>Student Name</th>
+                            <th>Student Email</th>
+                            <th>Student Tel Number</th>
+                            <th>Appointment Time</th>
+                            <th>Session Id</th>
+                            <th>Status</th>
+                            <th>View More</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for appointment in student_appointment %}
+                        <tr>
+                            <td>{{appointment.st_id}}</td>
+                            <td>{{appointment.st_name}}</td>
+                            <td>{{appointment.st_email}}</td>
+                            <td>{{appointment.st_tel}}</td>
+                            <td>{{appointment.appointment_time}}</td>
+                            <td>{{appointment.ses_id}}</td>
+                            <td>
+                                {% if appointment.book_status == 0 %}
+                                <div class="alert alert-warning p-1" style="display: flex;JUSTIFY-CONTENT: center;"
+                                    role="alert">
+                                    Pending
+                                </div>
+                                {% elif appointment.book_status == 1 %}
+                                <div class="alert alert-success p-1" style="display: flex;JUSTIFY-CONTENT: center;"
+                                    role="alert">
+                                    Approved
+                                </div>
+                                {% elif appointment.book_status == 2 %}
+                                <div class="alert alert-danger p-1" style="display: flex;JUSTIFY-CONTENT: center;"
+                                    role="alert">
+                                    Rejected
+                                </div>
+                                {% endif %}
+                            </td>
+
+
+                            <td>
+                                <button type="button" class="btn btn-primary view-more-button" data-toggle="modal"
+                                    data-target="#viewMoreModal{{ loop.index }}">View More</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            {% for book in student_appointment %}
+            <div class="modal fade" id="viewMoreModal{{ loop.index }}" tabindex="-1" role="dialog"
+                aria-labelledby="viewMoreModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewMoreModalLabel">Sessions Details</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card shadow mb-3">
+                                <div class="card-body">
+                                    <form method="POST" action="{{ url_for('lecturer.appointment') }}">
+                                        <div class="form-group">
+                                            <label for="session-id">Appointment Id</label>
+                                            <input type="text" name="appointment-id" class="form-control"
+                                                id="session-id" value="{{book.appointment_id}}" disabled>
+                                            <input type="hidden" id="hiddenInput" name="appointment-id"
+                                                value="{{book.appointment_id}}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="session-title">Title</label>
+                                            <input type="text" name="session-title" class="form-control"
+                                                id="session-title" value="{{book.ses_title}}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="session-subject">Subject</label>
+                                            <input type="text" name="session-subject" class="form-control"
+                                                id="session-subject" value="{{book.ses_subject}}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="session-campus">Unikl Campus</label>
+                                            <input type="text" name="session-campus" class="form-control"
+                                                id="session-campus" value="{{book.c_name}}" disabled>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-5">
+                                                <div class="form-group">
+                                                    <label for="session-start-time">Date</label>
+                                                    <input name="session-start-time" type='text' id="session-start-time"
+                                                        class="form-control" value="{{book.session_date}}" disabled />
+                                                </div>
+                                            </div>
+                                            <div class="col-7">
+                                                <div class="form-group">
+                                                    <label for="session-end-time">Duration</label>
+                                                    <input name="session-end-time" type='text' id="session-end-time"
+                                                        class="form-control" value="{{book.ses_time_range}}" disabled />
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="session-max-student">Max Student</label>
+                                            <input type="number" name="session-max-student" class="form-control"
+                                                id="session-max-student" value="{{book.ses_max}}" disabled>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="session-description">Description</label>
+                                            <textarea class="form-control" name="session-description"
+                                                id="session-description" rows="3" disabled>
+{{book.ses_description}}
+                                    </textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="student-meeting-time">Student Meeting Time</label>
+                                            <input type="text" name="student-meeting-time" class="form-control"
+                                                id="student-meeting-time" value="{{book.appointment_time}}" disabled>
+                                        </div>
+                                        <button type="submit" name="approve-button"
+                                            class="btn btn-primary btn-sm btn-block">Approve Appointment</button>
+                                        <button type="submit" name="reject-button"
+                                            class="btn btn-danger btn-sm btn-block">Reject Appointment</button>
+                                    </form>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                $('#dataTable').DataTable({
+                    "language": {
+                        "emptyTable": "<div style='text-align: center;''><img src='/static/img/notfound.svg' width='25%''><br>There's no appointment yet !.</div>"
+                    }
+                });
+            });
+        </script>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Your Website 2019</span>
+        </div>
+    </div>
+</footer>
+<!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Page level plugins -->
+<script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+
+<!-- Page level custom scripts -->
+<script src="{{ url_for('static', filename='js/demo/datatables-demo.js') }}"></script>
+
+
+</body>
+
+</html>

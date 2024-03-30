@@ -1,0 +1,116 @@
+{% extends "/admin/base/base.html" %}
+{% block style %}
+
+{% endblock %}
+{% block header %}
+<h2 class="text-muted">Leaves Request</h2>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center align-items-center h-screen">
+    <div class="col-xl-12 col-lg-12 col-md-12">
+        <div class="container-fluid">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div id="alert" class="alert alert-{{ category }} mt-4" role="alert">
+                {{ message }}
+            </div>
+            <script>
+                setTimeout(function () {
+                    document.getElementById('alert').style.display = 'none';
+                }, 3500);
+            </script>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        <div class="card o-hidden shadow-lg my-2">
+            <div class="card-body">
+                <div class="table-consainer">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-secondary" id="dataTable" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>User Id</th>
+                                    <th>Name</th>
+                                    <th>Leave Date</th>
+                                    <th>Leave Duration</th>
+                                    <th>Reason</th>
+                                    <th>Status</th>
+                                    <th>Proof</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for leave in get_all_leave %}
+                                <tr>
+                                    <td>{{ leave.userId }}</td>
+                                    <td>{{ leave.userFullName }}</td>
+                                    <td>{{ leave.leaveStart }} to {{leave.leaveEnd}}</td>
+                                    <td>{{ leave.leaveDuration }}</td>
+                                    <td>{{ leave.leaveReason }}</td>
+                                    <td
+                                        class="{{ 'text-warning' if leave.leaveStatus == 'pending' else 'text-danger' if leave.leaveStatus == 'rejected' else '' }}">
+                                        {% if leave.leaveStatus == 'pending' %}
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        {% elif leave.leaveStatus == 'rejected' %}
+                                        <i class="fas fa-times"></i>
+                                        {% endif %}
+                                        {{ leave.leaveStatus }}
+                                    </td>
+                                    <td>
+                                        <!-- Button to trigger the modal -->
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#leaveProofModal{{ loop.index }}">
+                                            View
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="leaveProofModal{{ loop.index }}" tabindex="-1"
+                                            aria-labelledby="leaveProofModalLabel{{ loop.index }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="leaveProofModalLabel{{ loop.index }}">Leave Proof</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <!-- Image -->
+                                                        <img src="{{url_for('static', filename='uploads/user_leaves_attachment/' + leave.leaveProof)}}"
+                                                            class="img-fluid" alt="Leave Proof">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                    <td>
+
+                                        <form action="{{url_for('admin.leave_request')}}" method="POST">
+                                            <input type="hidden" name="leaveId" value="{{ leave.leaveId }}">
+                                            <!-- Reject button -->
+                                            <button class="btn btn-danger" name="reject-button" type="submit">
+                                                <i class="fas fa-times"></i>
+                                            </button>
+
+                                            <!-- Approve button -->
+                                            <button class="btn btn-success" name="approve-button" type="submit">
+                                                <i class="fas fa-check"></i>
+                                            </button>
+
+                                        </form>
+
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,126 @@
+{% extends "/admin/base/base.html" %}
+{% block style %}
+<style>
+    .form-group {
+        margin-bottom: 1rem;
+    }
+</style>
+{% endblock %}
+{% block header %}
+<h2 class="text-muted">Register Staff</h2>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center align-items-center h-screen">
+    <div class="col-xl-8 col-lg-8 col-md-8">
+        <div class="container-fluid">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div id="alert" class="alert alert-{{ category }} mt-1 mb-2" role="alert">
+                {{ message }}
+            </div>
+            <script>
+                setTimeout(function () {
+                    document.getElementById('alert').style.display = 'none';
+                }, 3500);
+            </script>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        <div class="card o-hidden shadow-lg my-2">
+            <div class="card-body">
+                <form action="{{ url_for('admin.register_staff') }}" method="POST" enctype="multipart/form-data">
+                    <div class="form-group">
+                        <label for="inputUserId">User Id</label>
+                        <input type="number" name="userId" class="form-control" id="inputUserId"
+                            placeholder="Enter user id">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="inputUserFullName">Full Name</label>
+                        <input type="text" name="userFullName" class="form-control" id="inputUserFullName"
+                            placeholder="Enter full name">
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <label for="inputUserPosition">Position</label>
+                                <input type="text" name="userPosition" class="form-control" id="inputUserPosition"
+                                    placeholder="Enter user position">
+                            </div>
+                            <div class="col">
+                                <label for="inputUserRace">Race</label>
+                                <input type="text" name="userRace" class="form-control" id="inputUserRace"
+                                    placeholder="Enter user race">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col">
+                                <label for="inputUserNationality">Nationality</label>
+                                <input type="text" name="userNationality" class="form-control" id="inputUserNationality"
+                                    placeholder="Enter user nationality">
+                            </div>
+                            <div class="col">
+                                <label for="inputUserReligion">Religion</label>
+                                <input type="text" name="userReligion" class="form-control" id="inputUserReligion"
+                                    placeholder="Enter user religion">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="exampleInputPassword1">Password</label>
+                        <input type="password" class="form-control" id="exampleInputPassword1" name="userPassword" placeholder="Password">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="formFileImage" class="form-label">Reference Image</label>
+                        <input class="form-control" type="file" id="formFileImage" name="refImage" accept="image/*">
+                        <div id="imagePreview"></div>
+                    </div>
+
+                    <div class="d-flex justify-content-center">
+                        <button type="submit" class="btn btn-primary">Register</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+    document.getElementById('formFileImage').addEventListener('change', function (e) {
+        // Get the selected file
+        var file = e.target.files[0];
+
+        // Create a new FileReader object
+        var reader = new FileReader();
+
+        // When the file has been read...
+        reader.onload = function (e) {
+            // Create a new img element
+            var img = document.createElement('img');
+
+            // Set the src of the img element to the data URL of the file
+            img.src = e.target.result;
+
+            // Set the maximum width and height of the img element
+            img.style.maxWidth = '200px';
+            img.style.maxHeight = '200px';
+
+            // Add the img element to the imagePreview div
+            document.getElementById('imagePreview').innerHTML = '';
+            document.getElementById('imagePreview').appendChild(img);
+        };
+
+        // Read the file as a data URL
+        reader.readAsDataURL(file);
+    });
+</script>
+{% endblock %}

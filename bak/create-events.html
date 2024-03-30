@@ -1,0 +1,180 @@
+{% include '/admin/base.html' %}
+<link rel="stylesheet" href="/static/css/animations.css">
+<style>
+    .container-fluid {
+        animation: transitionIn-X 0.5s;
+    }
+</style>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div id="alert" class="alert alert-{{ category }}" role="alert">
+        {{ message }}
+    </div>
+    <script>
+        setTimeout(function () {
+            document.getElementById('alert').style.display = 'none';
+        }, 3500);
+    </script>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Create Events</h1>
+    </div>
+
+    <div class="card shadow">
+        <!-- Card Body -->
+        <div class="card-body">
+            <form action="{{ url_for('admin.create_events') }}" method="POST">
+                <div class="form-group">
+                    <label for="event-name">Event Name</label>
+                    <input type="text" name="event-name" class="form-control" id="event-name">
+                </div>
+                <div class="form-group">
+                    <label for="event-max-student">Max Students</label>
+                    <input type="text" name="event-max-student" class="form-control" id="event-max-student">
+                </div>
+                <div class="form-group">
+                    <label for="event-date">Event Date</label>
+                    <input type="date-input" name="event-date" class="form-control" id="event-date">
+                    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+                    <script type="text/javascript">
+                        config = {
+                            dateFormat: "Y-m-d",
+                            altInput: true,
+                            minDate: "today"
+                        }
+                        flatpickr("input[type=date-input]", config);
+                    </script>
+
+                </div>
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="event-start-time">Start Time</label>
+                            <input type="time-input" name="event-start-time" class="form-control" id="event-start-time">
+                        </div>
+                        <div class="col">
+                            <label for="event-end-time">End Time</label>
+                            <input type="time-input" name="event-end-time" class="form-control" id="event-date">
+                        </div>
+                    </div>
+                </div>
+
+                <script type="text/javascript">
+                    config = {
+                        enableTime: true,
+                        noCalendar: true,
+                        dateFormat: "H:i",
+                    }
+                    flatpickr("input[type=time-input]", config);
+                </script>
+
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col-10">
+                            <label for="inputAddress">Address</label>
+                            <input name="event-address" type="text" class="form-control" id="inputAddress">
+                        </div>
+                        <div class="col-2">
+                            <label for="current-location">Get Current Location</label><br>
+                            <button type="button" class="btn btn-primary btn-circle" id="get-current-location">
+                                <svg xmlns="http://www.w3.org/2000/svg" height="16" width="16"
+                                    viewBox="0 0 512 512"></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <div class="form-row">
+                    <div class="form-group col-md-6">
+                        <label for="inputCity">City</label>
+                        <input name="event-city" type="text" class="form-control" id="inputCity">
+                    </div>
+                    <div class="form-group col-md-4">
+                        <label for="inputState">State</label>
+                        <input name="event-state" type="text" class="form-control" id="inputState">
+                        </select>
+
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="inputZip">Zip</label>
+                        <input name="event-zipcode" type="number" class="form-control" id="inputZip">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col">
+                            <label for="event-latitude">Latitude</label>
+                            <input type="text" class="form-control" id="event-latitude" disabled>
+                            <input type="hidden" name="event-latitude" id="event-latitude-hidden">
+
+
+                        </div>
+                        <div class="col">
+                            <label for="event-longtitude">Longitude</label>
+                            <input type="text" class="form-control" id="event-longitude" disabled>
+                            <input type="hidden" name="event-longitude" id="event-longitude-hidden">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="form-row">
+                        <div class="col-6">
+                            <label for="max-radius">Max Radius</label>
+                            <input name="event-max-radius" type="number" class="form-control" id="max-radius"
+                                placeholder="m">
+                            <small id="passwordHelpBlock" class="form-text text-muted">
+                                The maximum radius in metre that the students can take the attendance.
+                            </small>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="d-flex flex-row-reverse">
+                    <button type="submit" class="btn btn-primary">Create Event</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Your Website 2019</span>
+        </div>
+    </div>
+</footer>
+<!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+<script src="{{ url_for('static', filename='/js/get-location.js') }}"></script>
+
+<!-- Bootstrap core JavaScript-->
+</body>
+
+</html>

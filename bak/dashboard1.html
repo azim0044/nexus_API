@@ -1,0 +1,136 @@
+{% include '/admin/base.html' %}
+<link rel="stylesheet" href="/static/css/animations.css">
+<style>
+    .doctor-header {
+        color: rgba(0, 0, 0, 0.87);
+        background-size: 100%;
+        background-repeat: no-repeat;
+        padding: 20px;
+        padding-left: 35px;
+    }
+
+    .container-fluid {
+        animation: transitionIn-X 0.5s;
+    }
+</style>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div id="alert" class="alert alert-{{ category }}" role="alert">
+        {{ message }}
+    </div>
+    <script>
+        setTimeout(function () {
+            document.getElementById('alert').style.display = 'none';
+        }, 3500);
+    </script>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4 mt-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+
+    </div>
+
+
+    <!-- <div class="content-wrapper">
+
+        <div class="row">
+            <div class="col-md-12 grid-margin">
+                <div class="d-flex justify-content-between flex-wrap">
+                    <div class="d-flex align-items-end flex-wrap">
+                        <div class="me-md-3 me-xl-5">
+                            <h2>Welcome back,</h2>
+                            <p class="mb-md-0">{{ get_acc_name }}</p>
+                        </div>
+
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+
+        <div class="row mt-5">
+            <div class="col-md-12 stretch-card">
+                <div class="card shadow" style="height: 500px; position: relative;">
+                    <div class="card-body">
+                        <p class="card-title">Recent Purchases</p>
+                        <div class="table-responsive" style="height: 100%; overflow: auto;">
+                            {% if get_admin_today_sessions|length == 0 %}
+                            <table class="table" id="dataTable" width="100%" cellspacing="0" style="height: 90%;">
+                                {% else %}
+                                <table class="table table-striped" id="dataTable" width="100%" cellspacing="0">
+                                    {% endif %}
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th>Event Id</th>
+                                            <th>Event Name</th>
+                                            <th>Event Date</th>
+                                            <th>Event Duration</th>
+                                            <th>Max Student</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% if get_admin_today_sessions|length == 0 %}
+                                        <tr>
+                                            <td colspan="6" class="text-center"
+                                                style="background: url('/static/images/notfound.svg') no-repeat center center; background-size: contain;">
+                                                <p class="heading-main12"
+                                                    style="font-size:20px;color:rgb(49, 49, 49); z-index: 1; background: rgba(255, 255, 255, 0.7); padding: 10px;">
+                                                    There's no today sessions yet !</p>
+                                            </td>
+                                        </tr>
+                                        {% else %}
+                                        {% for item in get_admin_today_sessions %}
+                                        <tr style="padding: 10px;">
+                                            <td>{{ item.event_id }}</td>
+                                            <td>{{ item.event_name }}</td>
+                                            <td>{{ item.event_date }}</td>
+                                            <td>{{ item.event_duration }}</td>
+                                            <td>{{ item.event_max_student }}</td>
+                                        </tr>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </tbody>
+                                </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div> -->
+    <!-- Content Row -->
+
+
+    <!-- Area Chart -->
+
+
+
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Bootstrap core JavaScript-->
+</body>
+
+</html>

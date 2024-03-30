@@ -1,0 +1,169 @@
+{% include '/lecturer/base.html' %}
+<link rel="stylesheet" href="/static/css/animations.css">
+<style>
+    .container-fluid {
+        animation: transitionIn-X 0.5s;
+    }
+</style>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Create Sessions</h1>
+    </div>
+
+    <div class="card shadow">
+        <!-- Card Body -->
+        <div class="card-body">
+            <form action="{{ url_for('lecturer.create_sessions') }}" method="POST">
+                <div class="form-group">
+                    <label for="session-title">Title</label>
+                    <input type="text" name="session-title" class="form-control" id="session-title">
+                </div>
+                <div class="form-group">
+                    <label for="session-subject">Subject</label>
+                    <input type="text" name="session-subject" class="form-control" id="session-subject">
+                </div>
+                <div class="form-group">
+                    <label for="session-campus">Unikl Campus</label>
+                    <input type="text" name="session-campus" class="form-control" id="session-campus" value="{{get_campus_name}}" disabled>
+                </div>
+                <div class="form-group">
+                    <label for="session-date">Session Date</label>
+                    <input name="session-date" type='date' id="session-date" class="form-control" name="session-date" />
+                    <script type="text/javascript">
+                        config = {
+                            dateFormat: "Y-m-d",
+                            altInput: true,
+                            altFormat: "F j, Y ",
+                            minDate: "today"
+                        }
+                        flatpickr("#session-date", config);
+                    </script>
+                </div>
+
+                <div class="row">
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="session-start-time">Session Start Time</label>
+                            <input name="session-start-time" type='text' id="session-start-time" class="form-control" />
+                        </div>
+                    </div>
+                    <div class="col">
+                        <div class="form-group">
+                            <label for="session-end-time">Session End Time</label>
+                            <input name="session-end-time" type='text' id="session-end-time" class="form-control" />
+                        </div>
+                    </div>
+                </div>
+                <script type="text/javascript">
+                    var startTimePicker;
+                    var endTimePicker;
+                    var startConfig = {
+                        enableTime: true,
+                        noCalendar: true,
+                        dateFormat: "h:i K",
+                        onChange: function (selectedDates, dateStr, instance) {
+                            if (endTimePicker) {
+                                var endTime = new Date(selectedDates[0]);
+                                endTime.setMinutes(endTime.getMinutes() + 30);
+                                endTimePicker.clear();
+                                endTimePicker.setDate(endTime);
+                            }
+                        }
+                    };
+                    var endConfig = {
+                        enableTime: true,
+                        noCalendar: true,
+                        dateFormat: "h:i K",
+                        onOpen: function (selectedDates, dateStr, instance) {
+                            if (startTimePicker.selectedDates[0]) {
+                                var hours = startTimePicker.selectedDates[0].getHours();
+                                var minutes = startTimePicker.selectedDates[0].getMinutes() + 30;
+                                instance.set('minTime', hours + ':' + minutes);
+                            }
+                        }
+                    };
+                    startTimePicker = flatpickr("#session-start-time", startConfig);
+                    endTimePicker = flatpickr("#session-end-time", endConfig);
+                </script>
+
+                <div class="form-group">
+                    <label for="session-max-student">Max Student</label>
+                    <input type="number" name="session-max-student" class="form-control" id="session-max-student">
+                </div>
+                <div class="form-group">
+                    <label for="session-description">Description</label>
+                    <textarea class="form-control" name="session-description" id="session-description"
+                        rows="3"></textarea>
+                </div>
+                {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                {% for category, message in messages %}
+                <div id="alert" class="alert alert-{{ category }}" role="alert">
+                    {{ message }}
+                </div>
+                <script>
+                    setTimeout(function () {
+                        document.getElementById('alert').style.display = 'none';
+                    }, 3500);
+                </script>
+                {% endfor %}
+                {% endif %}
+                {% endwith %}
+                <input class="btn btn-primary" id="submit-button"  type="submit" value="Submit" disabled>
+                <script type="text/javascript">
+                    var inputs = document.querySelectorAll('input, textarea');
+                    var button = document.getElementById('submit-button');
+                
+                    function checkInputs() {
+                        var allFilled = true;
+                        inputs.forEach(function(input) {
+                            if(input.value === '') {
+                                allFilled = false;
+                            }
+                        });
+                        button.disabled = !allFilled;
+                    }
+                
+                    inputs.forEach(function(input) {
+                        input.addEventListener('input', checkInputs);
+                    });
+                
+                    checkInputs();
+                </script>
+            </form>
+        </div>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Your Website 2019</span>
+        </div>
+    </div>
+</footer>
+<!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Bootstrap core JavaScript-->
+</body>
+
+</html>

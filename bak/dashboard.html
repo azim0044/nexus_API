@@ -1,0 +1,194 @@
+{% include '/lecturer/base.html' %}
+<link rel="stylesheet" href="/static/css/animations.css">
+<style>
+    .doctor-header {
+        color: rgba(0, 0, 0, 0.87);
+        background-size: 100%;
+        background-repeat: no-repeat;
+        padding: 20px;
+        padding-left: 35px;
+    }
+
+    .container-fluid {
+        animation: transitionIn-X 0.5s;
+    }
+</style>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+
+    <!-- Page Heading -->
+    <div class="d-sm-flex align-items-center justify-content-between mb-4">
+        <h1 class="h3 mb-0 text-gray-800">Dashboard</h1>
+
+    </div>
+    <div class="card shadow">
+        <!-- Card Header - Dropdown -->
+        <!-- Card Body -->
+        <div class="card-body" style="background: #ecf0f1;">
+            <table class=" doctor-header">
+                <tr>
+                    <td>
+                        <h3>Welcome Lecturer!</h3>
+                        <h1>
+                            {{ data_dict.name }}
+                        </h1>
+                        <p>
+                            {{ data_dict.campus_name }}
+                        </p>
+                        <p>Thanks for joinnig with us. We are always trying to get you a complete service<br>
+                            You can view your dailly schedule<br><br>
+                        </p>
+                        <a href="/lecturer/student-appointment" class="non-style-link"><button class="btn-primary btn">View My
+                                Appointments</button></a>
+                        <br>
+                        <br>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col mt-5">
+            <!-- Content Row -->
+            <div class="row  ">
+                <!-- Earnings (Monthly) Card Example -->
+                <div class="col-xl-12 col-md-6 mb-4 ">
+                    <div class="card border-left-primary shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-primary text-uppercase mb-1">Today
+                                        Sessions</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{count_today_session}}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-calendar fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Pending Requests Card Example -->
+                <div class="col-xl-12 col-md-6 mb-4">
+                    <div class="card border-left-warning shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-warning text-uppercase mb-1">Pending
+                                        Appointments
+                                    </div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{count_pending_appointment}}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-comments fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-xl-12 col-md-6 mb-4">
+                    <div class="card border-left-success shadow h-100 py-2">
+                        <div class="card-body">
+                            <div class="row no-gutters align-items-center">
+                                <div class="col mr-2">
+                                    <div class="text-xs font-weight-bold text-success text-uppercase mb-1">
+                                        Appointed Student</div>
+                                    <div class="h5 mb-0 font-weight-bold text-gray-800">{{count_appointed_student}}</div>
+                                </div>
+                                <div class="col-auto">
+                                    <i class="fas fa-user fa-2x text-gray-300"></i>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col mt-5">
+            <div class="card shadow mb-4">
+                <div class="card-header py-3">
+                    <h6 class="m-0 font-weight-bold text-primary">Your Today Up Coming Appointments</h6>
+                </div>
+                <div class="card-body">
+                    <div class="table-responsive" style="height: 260px; overflow: auto;">
+                        <table class="table" id="dataTable" width="100%" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>Session Id</th>
+                                    <th>Student Name</th>
+                                    <th>Student Id</th>
+                                    <th>Student Email</th>
+                                    <th>Time</th>
+                                    <th>Title</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% if student_appointment|length == 0 %}
+                                <tr>
+                                    <td colspan="6" class="text-center">
+                                        <img src="/static/img/notfound.svg" width="25%">
+                                        <p class="heading-main12" style="font-size:20px;color:rgb(49, 49, 49);">
+                                            There's no up coming appointments yet !</p>
+                                    </td>
+                                </tr>
+                                {% else %}
+                                {% for item in student_appointment %}
+                                <tr>
+                                    <td>{{ item.ses_id }}</td>
+                                    <td>{{ item.student_name }}</td>
+                                    <td>{{ item.student_id }}</td>
+                                    <td>{{ item.student_email }}</td>
+                                    <td>{{ item.appointment_time }}</td>
+                                    <td>{{ item.ses_title }}</td>
+                                </tr>
+                                {% endfor %}
+                                {% endif %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Content Row -->
+
+
+    <!-- Area Chart -->
+
+
+
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Your Website 2019</span>
+        </div>
+    </div>
+</footer>
+<!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Bootstrap core JavaScript-->
+</body>
+
+</html>

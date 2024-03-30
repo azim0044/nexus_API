@@ -1,0 +1,288 @@
+{% include '/admin/base.html' %}
+<link rel="stylesheet" href="/static/css/animations.css">
+<style>
+    .container-fluid {
+        animation: transitionIn-X 0.5s;
+    }
+</style>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div id="alert" class="alert alert-{{ category }}" role="alert">
+        {{ message }}
+    </div>
+    <script>
+        setTimeout(function () {
+            document.getElementById('alert').style.display = 'none';
+        }, 3500);
+    </script>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Events</h1>
+    <p class="mb-4">List of all events</a>.</p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Events Detail</h6>
+        </div>
+        <div class="card-body">
+            <div class="d-flex flex-row-reverse">
+                <!-- Button trigger modal -->
+                <button type="button" class="btn btn-success" data-toggle="modal" data-target="#exampleModal">
+                    <svg xmlns="http://www.w3.org/2000/svg" height="16" width="14" viewBox="0 0 448 512">
+                        <path
+                            d="M224 256A128 128 0 1 0 224 0a128 128 0 1 0 0 256zm-45.7 48C79.8 304 0 383.8 0 482.3C0 498.7 13.3 512 29.7 512H418.3c16.4 0 29.7-13.3 29.7-29.7C448 383.8 368.2 304 269.7 304H178.3z" />
+                    </svg>
+                    Register New Students
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog"
+                    aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Register Student</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body">
+                                <div class="card shadow mb-3">
+                                    <div class="card-body">
+                                        <form action="{{ url_for('admin.register_student') }}" method="POST"
+                                            enctype="multipart/form-data">
+                                            <div class="form-group">
+                                                <label for="student-ic">Student Ic No</label>
+                                                <input type="number" name="student-id" class="form-control"
+                                                    id="event-id-h">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="student-name">Student Name</label>
+                                                <input type="text" name="student-name" class="form-control"
+                                                    id="event-id-h">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="student-email">Student Email</label>
+                                                <input type="text" name="student-email" class="form-control"
+                                                    id="event-id-h">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="student-name">Student Tel No</label>
+                                                <input type="number" name="student-phone" class="form-control"
+                                                    id="event-id-h">
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="exampleFormControlFile1">Upload Student Reference
+                                                    Photo</label>
+                                                <input type="file" class="form-control-file"
+                                                    id="exampleFormControlFile1" accept="image/*"
+                                                    onchange="previewImage(event)" name="student-photo">
+                                            </div>
+                                            <div class="form-group">
+                                                <img id="preview"
+                                                    src="{{ url_for('static', filename='img/upload-image.png') }}"
+                                                    alt="Image preview" style="max-width: 200px; max-height: 200px;">
+                                            </div>
+                                            <div class="form-group">
+                                                <button type="submit" name="edit-button"
+                                                    class="btn btn-primary btn-sm btn-block">Register</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                    <script>
+                                        function previewImage(event) {
+                                            var reader = new FileReader();
+                                            reader.onload = function () {
+                                                var output = document.getElementById('preview');
+                                                output.src = reader.result;
+                                            }
+                                            reader.readAsDataURL(event.target.files[0]);
+                                        }
+                                    </script>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Student Id</th>
+                            <th>Student Name</th>
+                            <th>Student Email</th>
+                            <th>Student Tel No</th>
+                            <th>Events Registered</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for student in get_students %}
+                        <tr>
+                            <td>{{ student.student_id }}</td>
+                            <td>{{ student.student_name }}</td>
+                            <td>{{ student.student_email }}</td>
+                            <td>{{ student.student_no }}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary view-more-button" data-toggle="modal"
+                                data-target="#viewMoreModal{{ loop.index }}"
+                                onclick="getStudentEvents('{{ student.student_id }}', '{{ loop.index }}')">View
+                                Events</button>
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            {% for student in get_students %}
+            <div class="modal fade" id="viewMoreModal{{ loop.index }}" tabindex="-1" role="dialog"
+                aria-labelledby="viewMoreModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewMoreModalLabel">Register Event</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card shadow mb-3">
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table" id="eventtable" width="100%" cellspacing="0">
+                                            <thead>
+                                                <tr>
+                                                    <th>Event Id</th>
+                                                    <th>Event Name</th>
+                                                    <th>Event Date</th>
+                                                    <th>Event Duration</th>
+                                                </tr>
+                                            </thead>
+
+                                            <tbody>
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+                            <div class="card shadow mb-3">
+                                <div class="card-body">
+                                    <div class="form-group">
+                                        <form action="{{url_for('admin.register_student_event')}}" method="POST">
+                                            <input type="hidden" id="hiddenInput" name="student-id"
+                                                value="{{ student.student_id }}">
+                                            <label for="exampleFormControlSelect1">Please Select Events</label>
+                                            <select class="form-control" id="exampleFormControlSelect1" name="event-id">
+                                                <option value="" disabled selected>Choose registered event</option>
+
+                                                {% for event in get_events %}
+                                                <option value="{{ event.event_id }}">{{ event.event_detail }}</option>
+                                                {% endfor %}
+                                            </select>
+                                            <div class="form-group mt-5">
+                                                <button type="submit" name="edit-button"
+                                                    class="btn btn-primary btn-sm btn-block">Register Event</button>
+                                            </div>
+
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                $('#dataTable').DataTable({
+                    "language": {
+                        "emptyTable": "<div style='text-align: center;''><img src='/static/img/notfound.svg' width='25%''><br>There's no events yet !.</div>"
+                    }
+                });
+            });
+        </script>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+            <span>Copyright &copy; Your Website 2019</span>
+        </div>
+    </div>
+</footer>
+<!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+<script>
+window.onload = function() {
+    window.getStudentEvents = function(student_id, index) {
+        fetch(`/admin/get-student-events?student_id=${student_id}`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                let tableBody = document.querySelector(`#viewMoreModal${index} #eventtable tbody`);
+                tableBody.innerHTML = '';
+                if (data.length === 0) {
+                    tableBody.innerHTML = `<tr>
+                        <td colspan="4" class="text-center"
+                            style="background: url('/static/images/notfound.svg') no-repeat center center; background-size: contain;">
+                            <p class="heading-main12"
+                                style="font-size:20px;color:rgb(49, 49, 49); z-index: 1; background: rgba(255, 255, 255, 0.7); padding: 10px;">
+                                There's no Registered Events For This Student Yet !</p>
+                        </td>
+                    </tr>`;
+                } else {
+                    data.forEach(event => {
+                        let row = document.createElement('tr');
+                        ['event_id', 'event_name', 'event_date', 'event_duration'].forEach(key => {
+                            let cell = document.createElement('td');
+                            cell.textContent = event[key];
+                            row.appendChild(cell);
+                        });
+                        tableBody.appendChild(row);
+                    });
+                }
+            });
+    }
+}
+</script>
+<!-- Page level plugins -->
+<script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+
+<!-- Page level custom scripts -->
+<script src="{{ url_for('static', filename='js/demo/datatables-demo.js') }}"></script>
+
+
+</body>
+
+</html>

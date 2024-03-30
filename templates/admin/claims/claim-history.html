@@ -1,0 +1,102 @@
+{% extends "/admin/base/base.html" %}
+{% block style %}
+
+{% endblock %}
+{% block header %}
+<h2 class="text-muted">Claims History</h2>
+{% endblock %}
+{% block content %}
+<div class="row justify-content-center align-items-center h-screen">
+    <div class="col-xl-12 col-lg-12 col-md-12">
+        <div class="container-fluid">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+            {% for category, message in messages %}
+            <div id="alert" class="alert alert-{{ category }} mt-4" role="alert">
+                {{ message }}
+            </div>
+            <script>
+                setTimeout(function () {
+                    document.getElementById('alert').style.display = 'none';
+                }, 3500);
+            </script>
+            {% endfor %}
+            {% endif %}
+            {% endwith %}
+        </div>
+        <div class="card o-hidden shadow-lg my-2">
+            <div class="card-body">
+                <div class="table-consainer">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-secondary" id="dataTable" cellspacing="0">
+                            <thead>
+                                <tr>
+                                    <th>User Id</th>
+                                    <th>Name</th>
+                                    <th>Receipt No</th>
+                                    <th>Claim Type</th>
+                                    <th>Claim Reason</th>
+                                    <th>Claim Amount</th>
+                                    <th>Status</th>
+                                    <th>Claim Proof</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for row in get_all_claims %}
+                                <tr>
+                                    <td>{{ row.userId }}</td>
+                                    <td>{{ row.userFullName }}</td>
+                                    <td>{{ row.claimReceiptNo }}</td>
+                                    <td>{{ row.claimGroupName }}</td>
+                                    <td>{{ row.claimName }}</td>
+                                    <td>RM {{ row.claimAmount }}</td>
+                                    <td
+                                        class="{{ 'text-warning' if row.claimStatus == 'pending' else 'text-danger' if row.claimStatus == 'rejected' else 'text-success' if row.claimStatus == 'approved' else '' }}">
+                                        {% if row.claimStatus == 'pending' %}
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        {% elif row.claimStatus == 'rejected' %}
+                                        <i class="fas fa-times"></i>
+                                        {% elif row.claimStatus == 'approved' %}
+                                        <i class="fas fa-check"></i>
+                                        {% endif %}
+                                        {{ row.claimStatus }}
+                                    </td>
+                                    <td>
+                                        <!-- Button to trigger the modal -->
+                                        <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                            data-bs-target="#leaveProofModal{{ loop.index }}">
+                                            View
+                                        </button>
+
+                                        <!-- Modal -->
+                                        <div class="modal fade" id="leaveProofModal{{ loop.index }}" tabindex="-1"
+                                            aria-labelledby="leaveProofModalLabel{{ loop.index }}" aria-hidden="true">
+                                            <div class="modal-dialog modal-dialog-centered">
+                                                <div class="modal-content">
+                                                    <div class="modal-header">
+                                                        <h5 class="modal-title"
+                                                            id="leaveProofModalLabel{{ loop.index }}">Claim Proof</h5>
+                                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                            aria-label="Close"></button>
+                                                    </div>
+                                                    <div class="modal-body">
+                                                        <!-- Image -->
+                                                        <img src="{{url_for('static', filename='uploads/user_claim_attachment/' + row.claimProof)}}"
+                                                            class="img-fluid" alt="Claim Proof">
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

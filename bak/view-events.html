@@ -1,0 +1,334 @@
+{% include '/admin/base.html' %}
+<link rel="stylesheet" href="/static/css/animations.css">
+<style>
+    .container-fluid {
+        animation: transitionIn-X 0.5s;
+    }
+</style>
+<!-- Begin Page Content -->
+<div class="container-fluid">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div id="alert" class="alert alert-{{ category }}" role="alert">
+        {{ message }}
+    </div>
+    <script>
+        setTimeout(function () {
+            document.getElementById('alert').style.display = 'none';
+        }, 3500);
+    </script>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+    <!-- Page Heading -->
+    <h1 class="h3 mb-2 text-gray-800">Events</h1>
+    <p class="mb-4">List of all events</a>.</p>
+
+    <!-- DataTales Example -->
+    <div class="card shadow mb-4">
+        <div class="card-header py-3">
+            <h6 class="m-0 font-weight-bold text-primary">Events Detail</h6>
+        </div>
+        <div class="card-body">
+            <div class="table-responsive">
+                <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                    <thead>
+                        <tr>
+                            <th>Event Id</th>
+                            <th>Event Name</th>
+                            <th>Event Date</th>
+                            <th>Event Duration</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+                        {% for event in get_events %}
+                        <tr>
+                            <td>{{ event.event_id }}</td>
+                            <td>{{ event.event_name }}</td>
+                            <td>{{ event.event_date }}</td>
+                            <td>{{ event.event_duration }}</td>
+                            <td>
+                                <button type="button" class="btn btn-primary view-more-button" data-toggle="modal"
+                                    data-target="#viewMoreModal{{ loop.index }}">View Event</button><br>
+
+                            </td>
+                        </tr>
+                        {% endfor %}
+
+                    </tbody>
+                </table>
+            </div>
+            {% for event in get_events %}
+            <div class="modal fade" id="viewMoreModal{{ loop.index }}" tabindex="-1" role="dialog"
+                aria-labelledby="viewMoreModalLabel" aria-hidden="true">
+                <div class="modal-dialog modal-lg">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="viewMoreModalLabel">Event Details</h5>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="card shadow mb-3">
+                                <div class="card-body">
+                                    <nav>
+                                        <div class="nav nav-tabs" id="nav-tab{{ loop.index }}" role="tablist">
+                                            <button class="nav-link active" id="nav-home-tab{{ loop.index }}"
+                                                data-bs-toggle="tab" data-bs-target="#nav-home{{ loop.index }}"
+                                                type="button" role="tab" aria-controls="nav-home{{ loop.index }}"
+                                                aria-selected="true">Event Detail</button>
+                                            <button class="nav-link" id="nav-profile-tab{{ loop.index }}"
+                                                data-bs-toggle="tab" data-bs-target="#nav-profile{{ loop.index }}"
+                                                type="button" role="tab" aria-controls="nav-profile{{ loop.index }}"
+                                                aria-selected="false">Student Log</button>
+                                        </div>
+                                    </nav>
+                                    <div class="tab-content" id="nav-tabContent{{ loop.index }}">
+                                        <div class="tab-pane fade show active" id="nav-home{{ loop.index }}"
+                                            role="tabpanel" aria-labelledby="nav-home-tab{{ loop.index }}">
+                                            <form action="{{ url_for('admin.view_events') }}" method="POST">
+                                                <div class="form-group mt-3">
+                                                    <label for="event-name">Event Id</label>
+                                                    <input type="text" name="event" class="form-control" id="event-id-h"
+                                                        value="{{ event.event_id }}" disabled>
+                                                    <input type="hidden" name="event-id" value="{{ event.event_id }}">
+
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="event-name">Event Name</label>
+                                                    <input type="text" name="event-name" class="form-control"
+                                                        id="event-name" value="{{ event.event_name }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="event-max-student">Max Students</label>
+                                                    <input type="text" name="event-max-student" class="form-control"
+                                                        id="event-max-student" value="{{ event.event_max_student }}">
+                                                </div>
+                                                <div class="form-group">
+                                                    <label for="event-date">Event Date</label>
+                                                    <input type="text" name="event-date" class="form-control"
+                                                        id="event-date">
+                                                    <input type="hidden" name="event-date-hidden" id="event-date-hidden"
+                                                        value="{{ event.event_date}}">
+
+                                                    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
+
+                                                    <script type="text/javascript">
+                                                        config = {
+                                                            dateFormat: "Y-m-d",
+                                                            altInput: true,
+                                                            defaultDate: "{{ event.event_date}}"
+                                                        }
+                                                        flatpickr("#event-date", config); 
+                                                    </script>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="form-row">
+                                                        <div class="col">
+                                                            <label for="event-start-time">Start Time</label>
+                                                            <input type="time-input" name="event-start-time"
+                                                                class="form-control" id="event-start-time"
+                                                                value="{{ event.event_start_time }}">
+                                                        </div>
+                                                        <div class="col">
+                                                            <label for="event-end-time">End Time</label>
+                                                            <input type="time-input" name="event-end-time"
+                                                                class="form-control" id="event-end-time"
+                                                                value="{{ event.event_end_time }}">
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <script type="text/javascript">
+                                                    config = {
+                                                        enableTime: true,
+                                                        noCalendar: true,
+                                                        dateFormat: "H:i",
+
+                                                    }
+                                                    flatpickr("input[type=time-input]", config);
+                                                </script>
+                                                <div class="form-group">
+                                                    <div class="form-row">
+                                                        <div class="col-10">
+                                                            <label for="inputAddress">Address</label>
+                                                            <input name="event-address" type="text" class="form-control"
+                                                                id="inputAddress" value="{{event.event_address}}">
+                                                        </div>
+                                                        <div class="col-2">
+                                                            <br>
+                                                            <button type="button" class="btn btn-primary btn-circle"
+                                                                id="get-current-location">
+                                                                <svg xmlns="http://www.w3.org/2000/svg" height="16"
+                                                                    width="16" viewBox="0 0 512 512">
+                                                                    <path
+                                                                        d="M256 0c17.7 0 32 14.3 32 32V66.7C368.4 80.1 431.9 143.6 445.3 224H480c17.7 0 32 14.3 32 32s-14.3 32-32 32H445.3C431.9 368.4 368.4 431.9 288 445.3V480c0 17.7-14.3 32-32 32s-32-14.3-32-32V445.3C143.6 431.9 80.1 368.4 66.7 288H32c-17.7 0-32-14.3-32-32s14.3-32 32-32H66.7C80.1 143.6 143.6 80.1 224 66.7V32c0-17.7 14.3-32 32-32zM128 256a128 128 0 1 0 256 0 128 128 0 1 0 -256 0zm128-80a80 80 0 1 1 0 160 80 80 0 1 1 0-160z" />
+                                                                </svg>
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="form-row">
+                                                    <div class="form-group col-md-6">
+                                                        <label for="inputCity">City</label>
+                                                        <input name="event-city" type="text" class="form-control"
+                                                            id="inputCity" value="{{event.event_city}}">
+                                                    </div>
+                                                    <div class="form-group col-md-4">
+                                                        <label for="inputState">State</label>
+                                                        <input name="event-state" type="text" class="form-control"
+                                                            id="inputState" value="{{event.event_state}}">
+                                                        </select>
+
+                                                    </div>
+                                                    <div class="form-group col-md-2">
+                                                        <label for="inputZip">Zip</label>
+                                                        <input name="event-zipcode" type="number" class="form-control"
+                                                            id="inputZip" value="{{event.event_zip}}">
+                                                    </div>
+                                                </div>
+                                                <div class="form-group">
+                                                    <div class="form-row">
+                                                        <div class="col">
+                                                            <label for="event-latitude">Latitude</label>
+                                                            <input type="number" class="form-control"
+                                                                id="event-latitude" value="{{event.event_latitude}}"
+                                                                disabled>
+                                                            <input type="hidden" name="event-latitude"
+                                                                id="event-latitude-hidden"
+                                                                value="{{event.event_latitude}}">
+                                                        </div>
+                                                        <div class="col">
+                                                            <label for="event-longtitude">Longitude</label>
+                                                            <input type="number" class="form-control"
+                                                                id="event-longitude" value="{{event.event_longitude}}"
+                                                                disabled>
+                                                            <input type="hidden" name="event-longitude"
+                                                                id="event-longitude-hidden"
+                                                                value="{{event.event_longitude}}">
+
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                                <div class=" form-group">
+                                                    <div class="form-row">
+                                                        <div class="col-6">
+                                                            <label for="max-radius">Max Radius</label>
+                                                            <input name="event-max-radius" type="number"
+                                                                class="form-control" id="max-radius"
+                                                                value="{{event.event_max_radius}}">
+                                                            <small id="passwordHelpBlock" class="form-text text-muted">
+                                                                The maximum radius in metre that the students can take
+                                                                the
+                                                                attendance.
+                                                            </small>
+                                                        </div>
+
+                                                    </div>
+                                                </div>
+                                                <button type="submit" name="edit-button"
+                                                    class="btn btn-primary btn-sm btn-block">Edit
+                                                    Event</button>
+                                                <button type="submit" name="delete-button"
+                                                    class="btn btn-danger btn-sm btn-block">Delete
+                                                    Event</button>
+                                            </form>
+                                        </div>
+                                        <div class="tab-pane fade" id="nav-profile{{ loop.index }}" role="tabpanel"
+                                            aria-labelledby="nav-profile-tab{{ loop.index }}">
+                                            <table class="table table-striped mt-3">
+                                                <thead class="thead-dark">
+                                                    <tr>
+                                                        <th scope="col">Student Id</th>
+                                                        <th scope="col">Check In Date</th>
+                                                        <th scope="col">Check Out Date</th>
+                                                        <th scope="col">Status</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for event in event.student_log %}
+                                                    <tr>
+                                                        <td>{{ event.student_id }}</td>
+                                                        <td>{{ event.check_in_date }}</td>
+                                                        <td>{{ event.check_out_date }}</td>
+                                                        <td>
+                                                            {% if event.check_status == 'check-in' %}
+                                                            <div class="alert alert-warning p-1 m-0"
+                                                                style="display: flex;JUSTIFY-CONTENT: center;"
+                                                                role="alert">
+                                                                Check In
+                                                            </div>
+                                                            {% elif event.check_status == 'check-out' %}
+                                                            <div class="alert alert-success p-1 m-0 "
+                                                                style="display: flex;JUSTIFY-CONTENT: center;"
+                                                                role="alert">
+                                                                Check Out
+                                                            </div>
+                                                            {% endif %}
+                                                        </td>
+
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <script>
+            $(document).ready(function () {
+                $('#dataTable').DataTable({
+                    "language": {
+                        "emptyTable": "<div style='text-align: center;''><img src='/static/img/notfound.svg' width='25%''><br>There's no events yet !.</div>"
+                    }
+                });
+            });
+        </script>
+    </div>
+
+</div>
+<!-- /.container-fluid -->
+
+<!-- End of Main Content -->
+
+<!-- Footer -->
+
+<!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+<!-- Page level plugins -->
+<script src="{{ url_for('static', filename='vendor/datatables/jquery.dataTables.min.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/datatables/dataTables.bootstrap4.min.js') }}"></script>
+
+<!-- Page level custom scripts -->
+<script src="{{ url_for('static', filename='js/demo/datatables-demo.js') }}"></script>
+
+<script src="{{ url_for('static', filename='/js/get-location.js') }}"></script>
+
+</body>
+
+</html>

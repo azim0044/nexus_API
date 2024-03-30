@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="Flask Admin with SB Admin 2">
+  <meta name="author" content="Bukunmi">
+
+  <title>WeMeets</title>
+  <link rel="stylesheet" href="/static/css/animations.css">
+
+  <!-- Custom fonts for this template-->
+  <link
+    href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+    rel="stylesheet">
+  <!-- Font Awesome -->
+  <!-- Google Fonts -->
+  <!-- MDB -->
+  <!-- Custom styles for this template-->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <style>
+    .container {
+      animation: transitionIn-Y-over 0.5s;
+    }
+  </style>
+</head>
+
+<body class="bg-gradient-primary">
+
+  <div class="container">
+
+    <div class="card o-hidden border-0 shadow-lg my-5">
+      <div class="card-body p-0">
+        <div class="p-5">
+          <div class="text-center">
+            <h1 class="h4 text-gray-900 mb-4">Create an Account!</h1>
+          </div>
+          <form action="{{ url_for('lecturer.signup') }}" method="POST">
+            <div class="form-group mb-3">
+              <label for="staff-id" class="form-label">Staff Id</label>
+              <input type="number" name="staff-id" class="form-control" id="staff-id" aria-describedby="emailHelp">
+            </div>
+            <div class="form-group mb-3">
+              <label for="staff-name" class="form-label">Full Name</label>
+              <div class="input-group">
+                <input type="text" name="staff-name" class="form-control" id="staff-name">
+              </div>
+            </div>
+            <div class="form-group mb-3">
+              <div class="form-row">
+                <label for="staff-email" class="form-label">Unikl Email Address</label>
+                <div class="input-group mb-3">
+                  <input type="text" name="staff-email" class="form-control" id="staff-email"
+                    aria-describedby="emailHelp">
+                  <div class="input-group-append">
+                    <span class="input-group-text" id="basic-addon2">@s.unikl.edu.my</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="form-group mb-3">
+              <label for="staff-number" class="form-label">Phone Number</label>
+              <div class="input-group">
+                <input type="number" name="staff-number" class="form-control" id="staff-number"
+                  aria-describedby="emailHelp">
+              </div>
+            </div>
+            <div class="form-group mb-3">
+              <label for="staff-number" class="form-label">Select Campus</label>
+              <select class="form-select" name="staff-campus" aria-label="Default select example">
+                <option selected disabled>Select unikl campus</option>
+                {% for campus in all_campus %}
+                <option value="{{ campus[0] }}">{{ campus[1] }}</option>
+                {% endfor %}
+              </select>
+            </div>
+
+            <div class="form-group mb-3">
+              <div class="row">
+                <div class="col">
+                  <label for="password" class="form-label">Password</label>
+                  <input type="password" name="staff-password" class="form-control" id="password" placeholder="">
+                </div>
+                <div class="col">
+                  <label for="confirm-password" class="form-label">Confirm Password</label>
+                  <input type="password" name="c-staff-password" class="form-control" id="confirm-password"
+                    placeholder="">
+                </div>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary">Register Account</button>
+          </form>
+          <hr>
+          {% with messages = get_flashed_messages(with_categories=true) %}
+          {% if messages %}
+          {% for category, message in messages %}
+          <div id="alert" class="alert alert-{{ category }}" role="alert">
+            {{ message }}
+          </div>
+          <script>
+            setTimeout(function () {
+              document.getElementById('alert').style.display = 'none';
+            }, 3500);
+          </script>
+          {% endfor %}
+          {% endif %}
+          {% endwith %}
+          <div class="text-center">
+            <a class="large" href="/lecturer/login">Already have an account? Login!</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+    integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+    crossorigin="anonymous"></script>
+  <!-- MDB -->
+</body>
+
+</html>
