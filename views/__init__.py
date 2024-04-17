@@ -229,6 +229,7 @@ def announcement():
             flash('Announcement Sent Successfully!', 'success')
             return redirect(url_for('admin.announcement'))
     get_user = db_request.get_detail('GET_ALL_USER', (session['company_code'],))
+    print(get_user)
     return render_template('/admin/announcement/announcement.html', get_user=get_user)
 
 @admin_blueprint.route('/service-request', methods=['GET', 'POST'])
