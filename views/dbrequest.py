@@ -41,7 +41,7 @@ class DatabaseRequest:
             STAFF_ID = data[0]
             
             sql_query = """
-               SELECT userFullName, userProfile FROM users WHERE userId = %s
+               SELECT userFullName, userReference FROM users WHERE userId = %s
             """
 
             cur.execute(sql_query, (STAFF_ID,))

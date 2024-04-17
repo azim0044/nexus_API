@@ -356,7 +356,7 @@ def homepage():
 
 @servicesBP.route('/images/<filename>')
 def serve_image(filename):
-    return send_from_directory(app.config['PROFILE_FOLDER'], filename)
+    return send_from_directory(app.config['UPLOAD_REFERENCE_PHOTO'], filename)
 
 @servicesBP.route('/personal-details', methods=['GET'])
 @jwt_required()
@@ -654,7 +654,7 @@ def user_attendance():
                 # Compare with the reference encoding
                 matches = face_recognition.compare_faces([reference_encoding], face_encoding)
                 if True in matches:
-                    staff_current_time = datetime.hhnow().time()
+                    staff_current_time = datetime.now().time()
                     current_date = datetime.now().strftime("%Y-%m-%d")
 
                     # staff_current_time = time(21, 30)
