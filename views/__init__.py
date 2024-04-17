@@ -76,7 +76,7 @@ def login_register():
                     if bcrypt.check_password_hash(admin_detail['adminPassword'], password):
                         session['admin_id'] = admin_detail['adminId']
                         session['company_code'] = admin_detail['adminCompanyId']
-                        return redirect(url_for('admin.dashboard'))
+                        return redirect(url_for('admin.register_staff'))
                     else:
                         flash('Wrong Password or Username!', 'danger')
                         return redirect(url_for('admin.login_register'))
