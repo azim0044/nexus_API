@@ -33,8 +33,8 @@
                 <form action="{{ url_for('admin.register_staff') }}" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="inputUserId">User Id</label>
-                        <input type="number" name="userId" class="form-control" id="inputUserId"
-                            placeholder="Enter user id">
+                        <input type="number" class="form-control" id="inputUserId" disabled>
+                        <input type="hidden" name="userId" class="form-control" id="inputUserIdHidden">
                     </div>
 
                     <div class="form-group">
@@ -75,7 +75,8 @@
 
                     <div class="form-group">
                         <label for="exampleInputPassword1">Password</label>
-                        <input type="password" class="form-control" id="exampleInputPassword1" name="userPassword" placeholder="Password">
+                        <input type="password" class="form-control" id="exampleInputPassword1" name="userPassword"
+                            placeholder="Password">
                     </div>
 
                     <div class="form-group">
@@ -121,6 +122,21 @@
 
         // Read the file as a data URL
         reader.readAsDataURL(file);
+    });
+
+    document.getElementById('inputUserFullName').addEventListener('blur', function () {
+        fetch('/generate-user-id')
+            .then(response => response.text())
+            .then(companyCode => {
+                let companyCodeInput = document.getElementById('inputUserId');
+                let companyCodeHiddenInput = document.getElementById('inputUserIdHidden');
+
+                companyCodeInput.value = companyCode;
+                companyCodeHiddenInput.value = companyCode;
+
+                companyCodeInput.dispatchEvent(new Event('focus'));
+                companyCodeInput.dispatchEvent(new Event('blur'));
+            });
     });
 </script>
 {% endblock %}

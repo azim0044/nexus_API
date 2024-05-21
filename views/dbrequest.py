@@ -161,6 +161,18 @@ class DatabaseRequest:
             cur.close()
             return result_dict
         
+        if query_type == 'CHECK_USER_ID':
+            USER_ID = data[0]
+            sql_query = """
+               SELECT * FROM users WHERE userId = %s
+            """
+            cur.execute(sql_query, (USER_ID,))
+            result = cur.fetchone()
+            column_names = [desc[0] for desc in cur.description] if cur.description else []
+            result_dict = dict(zip(column_names, result)) if column_names and result else {}
+            cur.close()
+            return result_dict
+        
         if query_type == 'CHECK_ADMIN_USERNAME':
             USERNAME = data[0]
             sql_query = """
@@ -626,12 +638,13 @@ class DatabaseRequest:
                 claimName = data[2]
                 claimReceiptNo = data[3]
                 claimAmount = data[4]
+                claimProof = data[5]
 
                 sql_query = """
-                    INSERT INTO userclaim (userId, claimGroupName, claimName, claimReceiptNo, claimAmount)
-                    VALUES (%s, %s, %s, %s, %s);
+                    INSERT INTO userclaim (userId, claimGroupName, claimName, claimReceiptNo, claimAmount, claimProof)
+                    VALUES (%s, %s, %s, %s, %s, %s);
                 """
-                cur.execute(sql_query, (staffId, claimGroupName, claimName, claimReceiptNo, claimAmount))
+                cur.execute(sql_query, (staffId, claimGroupName, claimName, claimReceiptNo, claimAmount, claimProof))
                 self.mysql.connection.commit()
                 cur.close()
                 return True
